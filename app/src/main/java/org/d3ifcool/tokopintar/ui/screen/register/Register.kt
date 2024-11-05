@@ -1,6 +1,7 @@
 package org.d3ifcool.tokopintar.ui.screen.register
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -28,7 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -63,7 +63,7 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Toko Pintar",
+            text = stringResource(R.string.app_name),
             style = MaterialTheme.typography.titleLarge,
             color = Color.Black
         )
@@ -111,7 +111,7 @@ fun RegisterScreen(
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text("Email") },
+                    label = { Text(stringResource(R.string.email)) },
                     maxLines = 1,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -121,7 +121,7 @@ fun RegisterScreen(
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
-                    label = { Text("Kata Sandi") },
+                    label = { Text(stringResource(R.string.password)) },
                     maxLines = 1,
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()
@@ -146,7 +146,7 @@ fun RegisterScreen(
                         containerColor = Color(0xFF183447)
                     )
                 ) {
-                    Text("Masuk")
+                    Text(stringResource(R.string.login))
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -158,13 +158,11 @@ fun RegisterScreen(
                 ) {
                     Text("Sudah punya akun?")
                     Spacer(modifier = Modifier.width(4.dp))
-                    ClickableText(
-                        text = AnnotatedString("Masuk"),
-                        onClick = { onLoginClick() },
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            color = Color.Blue,
-                            textDecoration = TextDecoration.Underline
-                        )
+                    Text(
+                        text = stringResource(R.string.login),
+                        color = Color.Blue,
+                        textDecoration = TextDecoration.Underline,
+                        modifier = Modifier.clickable { onLoginClick() }
                     )
                 }
 
