@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import org.d3ifcool.tokopintar.navigation.NavGraph
+import org.d3ifcool.tokopintar.ui.screen.dashboard.HomeScreen
 import org.d3ifcool.tokopintar.ui.theme.TokoPintarTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,30 +20,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            TokoPintarTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+            TokoPintarTheme(darkTheme = false) {
+                NavGraph()
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TokoPintarTheme {
-        Greeting("Android")
     }
 }
