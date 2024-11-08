@@ -1,6 +1,7 @@
-package org.d3ifcool.tokopintar.ui.screen.login
+package org.d3ifcool.tokopintar.ui.screen.authentication
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,9 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -30,23 +29,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.d3ifcool.tokopintar.R
 
 @Composable
 fun LoginScreen(
-    onLoginClick: (String, String) -> Unit,
-    onGoogleLoginClick: () -> Unit,
+    authViewModel: AuthViewModel = viewModel(),
+    onLoginSuccess: () -> Unit,
     onRegisterClick: () -> Unit,
+    onGoogleLoginClick: () -> Unit,
     onForgotPasswordClick: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var loginStatus by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -121,23 +122,25 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Forgot Password
-                ClickableText(
-                    text = AnnotatedString("Lupa Kata Sandi?"),
-                    onClick = { onForgotPasswordClick() },
+                Text(
+                    text = "Lupa Kata Sandi?",
+                    color = Color.Blue,
                     style = MaterialTheme.typography.bodySmall.copy(
-                        color = Color.Blue,
                         textDecoration = TextDecoration.Underline
-                    )
+                    ),
+                    modifier = Modifier.clickable { onForgotPasswordClick() }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
-                    onClick = { onLoginClick(email, password) },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF183447)
-                    )
+                Button(onClick = {
+                    authViewModel.loginUser(email, password) { success, message ->
+                        loginStatus = message
+                        if (success) {
+                            onLoginSuccess() // Navigasi ke home setelah login berhasil
+                        }
+                    }
+                }
                 ) {
                     Text("Masuk")
                 }
@@ -151,13 +154,13 @@ fun LoginScreen(
                 ) {
                     Text("Belum punya akun?")
                     Spacer(modifier = Modifier.width(4.dp))
-                    ClickableText(
-                        text = AnnotatedString("Daftar"),
-                        onClick = { onRegisterClick() },
+                    Text(
+                        text = "Daftar",
+                        color = Color.Blue,
                         style = MaterialTheme.typography.bodySmall.copy(
-                            color = Color.Blue,
                             textDecoration = TextDecoration.Underline
-                        )
+                        ),
+                        modifier = Modifier.clickable { onRegisterClick() }
                     )
                 }
 
@@ -198,11 +201,11 @@ fun LoginScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewLoginScreen() {
+fun LoginScreenPreview() {
     LoginScreen(
-        onLoginClick = { _, _ -> /* Handle login */ },
-        onGoogleLoginClick = { /* Handle Google login */ },
-        onRegisterClick = { /* Handle register */ },
-        onForgotPasswordClick = { /* Handle forgot password */ }
+        onLoginSuccess = { /* Tidak ada aksi untuk preview */ },
+        onRegisterClick = { /* Tidak ada aksi untuk preview */ },
+        onGoogleLoginClick = { /* Tidak ada aksi untuk preview */ },
+        onForgotPasswordClick = { /* Tidak ada aksi untuk preview */ }
     )
 }

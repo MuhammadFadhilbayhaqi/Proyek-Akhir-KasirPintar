@@ -1,4 +1,4 @@
-package org.d3ifcool.tokopintar.ui.screen.register
+package org.d3ifcool.tokopintar.ui.screen.authentication
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -34,17 +33,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.d3ifcool.tokopintar.R
 
 @Composable
 fun RegisterScreen(
-    onRegisterClick: (String, String, String, String) -> Unit,
+    authViewModel: AuthViewModel = viewModel(),
+    onRegisterSuccess: () -> Unit,
     onLoginClick: () -> Unit
 ) {
     var storeName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
+    var registrationStatus by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -139,12 +141,14 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
-                    onClick = { onRegisterClick(storeName, email, password, phoneNumber) },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF183447)
-                    )
+                Button(onClick = {
+                    authViewModel.registerUser(email, password, storeName, phoneNumber) { success, message ->
+                        registrationStatus = message
+                        if (success) {
+                            onRegisterSuccess() // Navigasi ke login setelah registrasi berhasil
+                        }
+                    }
+                }
                 ) {
                     Text(stringResource(R.string.login))
                 }
@@ -165,21 +169,6 @@ fun RegisterScreen(
                         modifier = Modifier.clickable { onLoginClick() }
                     )
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-//                HorizontalDivider(
-//                    modifier = Modifier.padding(vertical = 8.dp),
-//                    color = Color.Gray.copy(alpha = 0.5f)
-//                )
-
-//                // Login with Google
-//                OutlinedButton(
-//                    onClick = onGoogleLoginClick,
-//                    modifier = Modifier.fillMaxWidth()
-//                ) {
-//                    Text("Login akun lain") // Change text to your preference
-//                }
             }
         }
     }
@@ -187,9 +176,9 @@ fun RegisterScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewRegisterScreen() {
+fun RegisterScreenPreview() {
     RegisterScreen(
-        onRegisterClick = { _, _, _, _ -> },
-        onLoginClick = { }
+        onRegisterSuccess = { /* Tidak ada aksi untuk preview */ },
+        onLoginClick = { /* Tidak ada aksi untuk preview */ }
     )
 }
